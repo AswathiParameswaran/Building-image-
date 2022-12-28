@@ -1,0 +1,50 @@
+mkdir images
+cd images
+mkdir nano
+wget  https://www.tooplate.com/zip-templates/2132_clean_work.zip
+sudo apt install unzip -y
+unzip  2132_clean_work.zip
+cd  2132_clean_work
+tar czvf nano.tar.gz*
+mv nano.tar.gz../
+cd ..
+cd images
+rm -rf 2132_clean_work.zip 2132_clean_work
+mv nano.tar.gz nano/
+
+##write the docker file 
+Vim Dockerfile
+
+FROM ubuntu:latest
+LABEL "Author"="Aswathi"
+LABEL "project"="Nano"
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install git -y
+RUN apt install apache2  -y
+CMD ["/usr/sbin/apache2ctl","-D","FOREGROUND"]
+EXPOSE 80
+WORKDIR /var/www/html
+VOLUME /var/log/apache2
+ADD nano.tar.gz /var/www/html
+#COPY nano. tar. gz /var/www/html
+
+save an quit the file 
+docker build -t nanoimg .
+docker image
+docker rmi image ID
+
+docker run -d --name nanowebsite -p 9080:80 nanoimg
+docker ps
+
+docker build -t nanoimg :V2 .
+docker run -d --name nanowebsite -p 9080:80 nanoimg:v2
+
+host this in to docker hub registory 
+
+docker build -t aswathip/nanoimg :V2 .
+
+docker login 
+
+give usre name and password
+
+docker push aswathip/nanoimg:V2
